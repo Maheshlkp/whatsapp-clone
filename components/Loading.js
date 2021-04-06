@@ -1,4 +1,5 @@
 import React from 'react'
+import { Circle } from "better-react-spinkit";
 
 function Loading () {
     return (
@@ -6,12 +7,9 @@ function Loading () {
             <div>
                 <img src="https://logos-world.net/wp-content/uploads/2020/05/WhatsApp-Logo.png" alt=""
                     style={{ marginBottom: 10 }}
-                    height={200} />
-                <circle color="green" size={60} />
-
+                    height={100} />
+                <Circle color="green" size={60} />
             </div>
-
-
         </center>
     )
 }

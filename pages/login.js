@@ -2,7 +2,6 @@ import React from 'react'
 import styled from "styled-components";
 import Head from "next/head"
 import { Button } from "@material-ui/core"
-// import { auth } from 'google-auth-library';
 import { auth, provider } from '../firebase';
 
 function Login () {
