@@ -1,12 +1,12 @@
 import Head from 'next/head'
 import Sidebar from "../components/Sidebar";
-import Login from "./login"
+// import Login from "./login"
 
 
-export default function Home () {
+export default function Home() {
   return (
     <div className="container">
-      <Login />
+      {/* <Login /> */}
       <Head>
         <title>Whatsapp</title>
         <link rel="icon" href="/favicon.ico" />

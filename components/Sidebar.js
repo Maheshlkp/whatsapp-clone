@@ -10,7 +10,7 @@ import { useAuthState } from 'react-firebase-hooks/auth';
 import { useCollection } from "react-firebase-hooks/firestore";
 import Chat from './Chat';
 
-function Sidebar () {
+function Sidebar() {
 
     const [user] = useAuthState(auth);
     const userChatRef = db.collection('chats').where('users', 'array-contains', user.email);
@@ -30,12 +30,12 @@ function Sidebar () {
     }
 
     const chatAlreadyExists = (recipientEmail) => {
-        !!chatsSnapshot ?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail) ?.length > 0);
+        !!chatsSnapshot?.docs.find((chat) => chat.data().users.find((user) => user === recipientEmail)?.length > 0);
     }
     return (
         <Container>
             <Header>
-                <UserAvatar onClick={() => auth.signOut()} />
+                <UserAvatar src={user.photoURL} onClick={() => auth.signOut()} />
                 <IconsContainer>
                     <IconButton>
                         <ChatIcon />
@@ -53,8 +53,8 @@ function Sidebar () {
 
             <SidebarButton onClick={CreateChat}>Start a new chat</SidebarButton>
 
-            {chatsSnapshot ?.docs.map((chat) => (
-                <Chat key={chat.id} id={chat.id} user={chat.data().users} />
+            {chatsSnapshot?.docs.map((chat) => (
+                <Chat key={chat.id} id={chat.id} users={chat.data().users} />
             ))}
         </Container>
     )
