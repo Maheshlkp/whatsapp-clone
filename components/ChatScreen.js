@@ -9,17 +9,19 @@ import AttachFileIcon from "@material-ui/icons/AttachFile"
 import { useCollection } from 'react-firebase-hooks/firestore';
 import InsertEmoticonIcon from "@material-ui/icons/InsertEmoticon"
 import MicIcon from "@material-ui/icons/Mic"
+import firebase from "firebase";
 
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import Message from "./Message";
 import getRecipientEmail from "../utils/getRecipientEmail";
-
+import TimeAgo from "timeago-react"
 
 
 
 function ChatScreen({ chat, messages }) {
     const [user] = useAuthState(auth);
     const [input, setInput] = useState("")
+    const EndOfMessageRef = useRef(null);
     const router = useRouter();
     const [messagesSnapshot] = useCollection(
         db.collection('chats')
@@ -35,7 +37,8 @@ function ChatScreen({ chat, messages }) {
     const showMessages = () => {
         if (messagesSnapshot) {
             return messagesSnapshot.docs.map((message) => (
-                <Message key={message.id}
+                <Message
+                    key={message.id}
                     user={message.data().user}
                     message={{
                         ...message.data(),
@@ -44,12 +47,19 @@ function ChatScreen({ chat, messages }) {
                 />
             ))
         } else {
-            return JSON.parse(messages).map((message) => (
+            return JSON.parse(messages).map(message => (
                 <Message key={message.id} user={message.user} message={message} />
             ))
 
         }
 
+    }
+
+    const scrollToBottom = () => {
+        EndOfMessageRef.current.scrollIntoView({
+            behavior: "smooth",
+            block: "start",
+        })
     }
 
 
@@ -73,9 +83,10 @@ function ChatScreen({ chat, messages }) {
         })
 
         setInput('');
+        scrollToBottom();
     };
 
-    const recipient = recipientSnapshot?.docs?.[0].data();
+    const recipient = recipientSnapshot?.docs?.[0]?.data();
     const recipientEmail = getRecipientEmail(chat.users, user)
 
     return (
@@ -85,11 +96,10 @@ function ChatScreen({ chat, messages }) {
                 {recipient ? (
                     <Avatar src={recipient?.photoURL} />
                 ) : (
-                    <Avatar src={recipientEmail[0]} />
+                    <Avatar src={recipientEmail[0]}></Avatar>
                 )
 
                 }
-                <Avatar />
                 <HeaderInformation>
                     <h3>{recipientEmail}</h3>
                     {recipientSnapshot ? (
@@ -115,12 +125,12 @@ function ChatScreen({ chat, messages }) {
 
             <MessageContainer>
                 {showMessages()}
-                <EndOfMessage />
+                <EndOfMessage ref={EndOfMessageRef} />
             </MessageContainer>
 
             <InputContainer>
                 <InsertEmoticonIcon />
-                <Input value={input} onChange={(e) => setInput(e.target.value)} />
+                <Input value={input} onChange={e => setInput(e.target.value)} />
                 <button hidden disabled={!input} type="submit" onClick={sendMessage}>Send message</button>
                 <MicIcon />
             </InputContainer>
@@ -132,13 +142,15 @@ export default ChatScreen
 
 const Container = styled.div``;
 
-const Input = styled.div`
+const Input = styled.input`
 flex: 1;
-align-items: center;
-padding: 10px;
-position: sticky;
-bottom: 0;
+outline:0;
+border:none;
+border-radius: 10px;
 background-color: whitesmoke;
+padding: 20px;
+margin-left: 15px;
+margin-right: 15px;
 `;
 
 const InputContainer = styled.form`
@@ -181,7 +193,9 @@ const HeaderIcons = styled.div`
 
 `;
 
-const EndOfMessage = styled.div``;
+const EndOfMessage = styled.div`
+margin-bottom: 50px;
+`;
 
 const MessageContainer = styled.div`
 padding: 30px;
